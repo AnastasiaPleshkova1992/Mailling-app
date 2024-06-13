@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from client.models import Client
@@ -24,6 +25,13 @@ class MailingMessage(models.Model):
 
     title = models.CharField(max_length=100, verbose_name="Тема письма")
     content = models.TextField(verbose_name="Тело письма")
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        default=1,
+        on_delete=models.CASCADE,
+        related_name="messages",
+        verbose_name="Автор",
+    )
 
     class Meta:
         verbose_name = "Сообщение"
@@ -53,6 +61,13 @@ class MailingSettings(models.Model):
         default="Create",
     )
     clients = models.ManyToManyField(Client, verbose_name="Получатели")
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        default=1,
+        on_delete=models.CASCADE,
+        related_name="mailing_settings",
+        verbose_name="Автор",
+    )
 
     class Meta:
         verbose_name = "Настройка рассылки"
@@ -77,11 +92,18 @@ class MailingStatus(models.Model):
         verbose_name="Статус попытки",
     )
     mailing_response = models.TextField(verbose_name="Ответ почтового сервера")
-    mailing_list = models.ForeignKey(
+    mailing = models.ForeignKey(
         MailingSettings, on_delete=models.CASCADE, verbose_name="Рассылка"
     )
     client = models.ForeignKey(
         Client, on_delete=models.CASCADE, verbose_name="Клиент рассылки", **NULLABLE
+    )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        default=1,
+        on_delete=models.CASCADE,
+        related_name="mailing_status",
+        verbose_name="Автор",
     )
 
     class Meta:

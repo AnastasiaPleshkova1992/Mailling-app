@@ -1,6 +1,11 @@
 {% extends 'client/base.html' %}
 {% block content %}
 <div class="row text-center">
+    <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+    <h2 class="display-4 fw-normal text-body-emphasis">Мои клиенты</h2>
+    <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="{% url 'client:create' %}">Добавить
+        клиента</a>
+</div>
     {% for client in object_list %}
     <div class="col-3">
         <div class="card mb-4 box-shadow">
@@ -9,11 +14,11 @@
             </div>
             <div class="card-body">
                 <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                    <li>- {{ client.description|slice:100 }}</li>
+                    <li>- {{ client.comment|slice:100 }}</li>
                     <li>- {{ client.name }}</li>
                 </ul>
-                <a href="{% url 'recipient:view' recipient.pk %}" type="button"
-                   class="btn btn-lg btn-block btn-outline-primary">Подробнее</a>
+                <a href="{% url 'client:view' client.pk %}" type="button"
+                   class="btn btn-lg btn-block btn-outline-primary">Посмотреть</a>
             </div>
         </div>
     </div>

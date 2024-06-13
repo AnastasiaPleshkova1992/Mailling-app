@@ -7,5 +7,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(('mailing.urls', 'mailing'))),
     path('client/', include(('client.urls', 'client'))),
-    # path('users/', include(('users.urls', 'users'))),
+    path('users/', include(('users.urls', 'users'))),
+    path('blog/', include(('blog.urls', 'blog'))),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

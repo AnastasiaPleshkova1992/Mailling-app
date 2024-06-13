@@ -7,11 +7,11 @@
                 <h4 class="my-0 font-weight-normal">{{ object.name }} ({{ object.email }})</h4>
             </div>
             <div class="card-body">
-                <div class="card-footer text-centr">
-                    Комментарии: {{ object.description }}
-                </div>
+                Комментарий: {{ object.comment }}
             </div>
-            <a href="{% url 'client:delete' object.pk %}" class="btn btn-warning">Удалить</a>
+            <a class="btn btn-warning" href="{% url 'client:edit' object.pk %}" role="button">Изменить</a>
+            <a class="btn btn-primary" href="{% url 'client:list' %}" role="button">Назад</a>
+            <a class="btn btn-danger" href="{% url 'client:delete' object.pk %}" role="button">Удалить</a>
         </div>
     </div>
 </div>

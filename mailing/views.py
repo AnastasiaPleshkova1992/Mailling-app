@@ -1,8 +1,13 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView, DetailView, ListView, UpdateView, CreateView
+from django.views.generic import DeleteView, DetailView, ListView, UpdateView, CreateView, TemplateView
 
-from mailing.models import MailingSettings, MailingMessage
+from mailing.models import MailingSettings, MailingMessage, MailingStatus
+
+
+class HomeTemplateView(TemplateView):
+    """Контроллер для главной страницы"""
+    template_name = 'mailing/home.html'
 
 
 class MailingMessageCreateView(CreateView):
@@ -38,7 +43,7 @@ class MailingSettingsCreateView(CreateView):
 
 class MailingSettingsUpdateView(UpdateView):
     model = MailingSettings
-    fields = ['sending', 'recipients', 'message', 'end_time']
+    fields = ['sending', 'clients', 'message', 'end_time']
     success_url = reverse_lazy('mailing:settings_list')
 
 
@@ -53,3 +58,12 @@ class MailingSettingsDetailView(DetailView):
 class MailingSettingsDeleteView(DeleteView):
     model = MailingSettings
     success_url = reverse_lazy('mailing:settings_list')
+
+
+class MailingStatusListView(ListView):
+    model = MailingStatus
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(owner=self.request.user)
+        return queryset
