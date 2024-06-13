@@ -63,6 +63,15 @@ class BlogPostDeleteView(DeleteView):
     model = BlogPost
     success_url = reverse_lazy("blog:list")
 
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.user:
+            return BlogPostForm
+        if (user.has_perm('blog.can_cancel_puplication') and
+                user.has_perm('blog.can_change_title') and user.has_perm('blog.can_change_body')):
+            return BlogPostModeratorForm
+        raise PermissionDenied
+
 
 def toggle_publication(request, pk):
     blogpost_item = get_object_or_404(BlogPost, pk=pk)

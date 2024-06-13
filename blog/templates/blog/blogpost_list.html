@@ -29,15 +29,15 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="btn-group" role="group" aria-label="Группа маленьких кнопок">
                             <a href="{% url 'blog:view' post.pk %}" type="button" class="btn btn-danger">Посмотреть</a>
-                            {% if user == post.user or perms.blog.can_cancel_puplication and perms.blog.can_change_title and perms.blog.can_change_body and post.published%}
+                            {% if user == post.user or perms.blog.can_cancel_puplication and perms.blog.can_change_title and perms.blog.can_change_body%}
                             <a href="{% url 'blog:update' post.pk %}" type="button" class="btn btn-warning">Изменить</a>
                             <a href="{% url 'blog:delete' post.pk %}" type="button" class="btn btn-success">Удалить</a>
-                            <a class="btn btn-light" href="{% url 'blog:toggle_publication' post.pk %}">Отменить
-                                публикацию</a>
-                            {% else %}
-                            <a href="{% url 'blog:update' post.pk %}" type="button" class="btn btn-warning">Изменить</a>
-                            <a href="{% url 'blog:delete' post.pk %}" type="button" class="btn btn-success">Удалить</a>
-                            <a class="btn btn-info" href="{% url 'blog:toggle_publication' post.pk %}">Опубликовать</a>
+                                {% if post.published %}
+                                <a class="btn btn-light" href="{% url 'blog:toggle_publication' post.pk %}">Отменить
+                                    публикацию</a>
+                                {% else %}
+                                <a class="btn btn-info" href="{% url 'blog:toggle_publication' post.pk %}">Опубликовать</a>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
