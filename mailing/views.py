@@ -92,7 +92,7 @@ class MailingSettingsCreateView(CreateView):
 
 class MailingSettingsUpdateView(UpdateView):
     model = MailingSettings
-    fields = ['sending', 'clients', 'message', 'end_time']
+    form_class = MailingSettingsForm
     success_url = reverse_lazy('mailing:settings_list')
 
     def get_form_class(self):
@@ -102,6 +102,11 @@ class MailingSettingsUpdateView(UpdateView):
         if user.has_perm('mailing.can_change_setting_status'):
             return MailingSettingsModeratorForm
         raise PermissionDenied
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 class MailingSettingsListView(ListView):
