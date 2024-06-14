@@ -7,6 +7,7 @@
         клиента</a>
 </div>
     {% for client in object_list %}
+    {% if user == client.owner or perms.blog.can_cancel_puplication or user.is_superuser %}
     <div class="col-3">
         <div class="card mb-4 box-shadow">
             <div class="card-header">
@@ -16,12 +17,14 @@
                 <ul class="list-unstyled mt-3 mb-4 text-start m-3">
                     <li>- {{ client.comment|slice:100 }}</li>
                     <li>- {{ client.name }}</li>
+                    <p class="card-title pricing-card-title">Автор: {{ client.owner }}</p>
                 </ul>
                 <a href="{% url 'client:view' client.pk %}" type="button"
                    class="btn btn-lg btn-block btn-outline-primary">Посмотреть</a>
             </div>
         </div>
     </div>
+    {% endif %}
     {% endfor %}
 </div>
 {% endblock %}

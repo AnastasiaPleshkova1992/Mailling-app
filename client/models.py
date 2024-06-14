@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
 
+from users.models import User
+
 NULLABLE = {"null": True, "blank": True}
 
 
@@ -11,11 +13,7 @@ class Client(models.Model):
     name = models.CharField(max_length=100, verbose_name="ФИО")
     comment = models.TextField(verbose_name="Комментарий", **NULLABLE)
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        default=1,
-        on_delete=models.CASCADE,
-        related_name="clients",
-        verbose_name="Автор",
+        User, on_delete=models.CASCADE, verbose_name="Автор", **NULLABLE
     )
 
     class Meta:

@@ -1,11 +1,13 @@
 import random
 
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView, UpdateView, CreateView, TemplateView
 
 from blog.models import BlogPost
 from client.models import Client
+from mailing.forms import MailingSettingsModeratorForm, MailingSettingsForm, MailingMessageForm
 from mailing.models import MailingSettings, MailingMessage, MailingStatus
 
 
@@ -34,16 +36,32 @@ class MailingMessageCreateView(CreateView):
     fields = ['title', 'content']
     success_url = reverse_lazy('mailing:list')
 
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
 
 class MailingMessageUpdateView(UpdateView):
     model = MailingMessage
     fields = ['title', 'content']
     success_url = reverse_lazy('mailing:list')
 
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.owner or user.is_superuser:
+            return MailingMessageForm
+        raise PermissionDenied
+
 
 class MailingMessageDeleteView(DeleteView):
     model = MailingMessage
     success_url = reverse_lazy('mailing:list')
+
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.owner or user.is_superuser:
+            return MailingMessageForm
+        raise PermissionDenied
 
 
 class MailingMessageListView(ListView):
@@ -56,14 +74,31 @@ class MailingMessageDetailView(DetailView):
 
 class MailingSettingsCreateView(CreateView):
     model = MailingSettings
-    fields = ['sending', 'clients', 'message', 'end_time']
+    form_class = MailingSettingsForm
     success_url = reverse_lazy('mailing:settings_list')
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 class MailingSettingsUpdateView(UpdateView):
     model = MailingSettings
     fields = ['sending', 'clients', 'message', 'end_time']
     success_url = reverse_lazy('mailing:settings_list')
+
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.owner or user.is_superuser:
+            return MailingSettingsForm
+        if user.has_perm('mailing.can_change_setting_status'):
+            return MailingSettingsModeratorForm
+        raise PermissionDenied
 
 
 class MailingSettingsListView(ListView):
@@ -78,11 +113,17 @@ class MailingSettingsDeleteView(DeleteView):
     model = MailingSettings
     success_url = reverse_lazy('mailing:settings_list')
 
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.owner:
+            return MailingSettingsForm
+        raise PermissionDenied
+
 
 class MailingStatusListView(ListView):
     model = MailingStatus
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.filter(owner=self.request.user)
-        return queryset
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     queryset = queryset.filter(owner=self.request.user)
+    #     return queryset

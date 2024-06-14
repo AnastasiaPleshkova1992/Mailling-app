@@ -16,19 +16,19 @@
                     <th scope="col">Дата и время последней рассылки</th>
                     <th scope="col">Cтатус</th>
                     <th scope="col">Ответ почтового сервера</th>
-                    <th scope="col">Клиенты</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for status in status_list %}
+                {% for status in object_list %}
+                {% if user == status.owner or perms.blog.can_cancel_puplication or user.is_superuser %}
                 <tr>
                     <td>{{status.pk}}</td>
                     <td>{{status.mailing}}</td>
                     <td>{{status.last_datetime}}</td>
                     <td>{{status.status}}</td>
                     <td>{{status.mailing_response}}</td>
-                    <td>{{status.client}}</td>
                 </tr>
+                {% endif %}
                 {% endfor %}
                 </tbody>
             </table>

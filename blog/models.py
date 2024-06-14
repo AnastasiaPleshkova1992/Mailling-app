@@ -34,6 +34,4 @@ class BlogPost(models.Model):
         verbose_name_plural = "Посты"
         permissions = [
             ("can_cancel_puplication", "Может отменять публикацию"),
-            ("can_change_title", "Может менять название"),
-            ("can_change_body", "Может менять содержимое"),
         ]

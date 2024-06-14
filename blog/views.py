@@ -31,6 +31,7 @@ class BlogPostCreateView(CreateView):
         if form.is_valid:
             new_object = form.save(commit=False)
             new_object.slug = slugify(new_object.title)
+            form.instance.user = self.request.user
             new_object.save()
             return super().form_valid(form)
 
@@ -43,6 +44,7 @@ class BlogPostUpdateView(UpdateView):
         if form.is_valid:
             new_object = form.save(commit=False)
             new_object.slug = slugify(new_object.title)
+            form.instance.user = self.request.user
             new_object.save()
             return super().form_valid(form)
 
@@ -51,25 +53,22 @@ class BlogPostUpdateView(UpdateView):
 
     def get_form_class(self):
         user = self.request.user
-        if user == self.object.user:
+        if user == self.object.user or user.is_superuser:
             return BlogPostForm
-        if (user.has_perm('blog.can_cancel_puplication') and
-                user.has_perm('blog.can_change_title') and user.has_perm('blog.can_change_body')):
+        if user.has_perm('blog.can_cancel_puplication'):
             return BlogPostModeratorForm
         raise PermissionDenied
 
 
 class BlogPostDeleteView(DeleteView):
     model = BlogPost
+    form_class = BlogPostForm
     success_url = reverse_lazy("blog:list")
 
     def get_form_class(self):
         user = self.request.user
-        if user == self.object.user:
+        if user == self.object.user or user.is_superuser:
             return BlogPostForm
-        if (user.has_perm('blog.can_cancel_puplication') and
-                user.has_perm('blog.can_change_title') and user.has_perm('blog.can_change_body')):
-            return BlogPostModeratorForm
         raise PermissionDenied
 
 

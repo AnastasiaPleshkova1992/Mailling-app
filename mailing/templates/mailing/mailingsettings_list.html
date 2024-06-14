@@ -8,6 +8,7 @@
 </div>
 <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
     {% for object in object_list %}
+    {% if user == object.owner or perms.blog.can_cancel_puplication or user.is_superuser %}
     <div class="col">
         <div class="card mb-4 rounded-3 shadow-sm">
             <div class="card-header py-3">
@@ -19,11 +20,13 @@
                 {% endfor %}
                 <p class="card-title pricing-card-title">Периодичность: {{ object.sending }}</p>
                 <p class="card-title pricing-card-title">Завершится: {{ object.end_time }}</p>
+                <p class="card-title pricing-card-title">Автор: {{ object.owner }}</p>
                 <a class="btn btn-primary" href="{% url 'mailing:settings_view' object.pk %}"
                    role="button">Просмотреть</a>
             </div>
         </div>
     </div>
+    {% endif %}
     {% endfor %}
 </div>
 

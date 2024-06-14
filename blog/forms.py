@@ -14,4 +14,4 @@ class BlogPostForm(StileFormMixin, forms.ModelForm):
 class BlogPostModeratorForm(StileFormMixin, forms.ModelForm):
     class Meta:
         model = BlogPost
-        fields = ('published', 'title', 'image',)
+        fields = ('published',)

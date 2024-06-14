@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from mailing.models import MailingSettings, MailingMessage
+
+admin.site.register(MailingSettings)
+admin.site.register(MailingMessage)
