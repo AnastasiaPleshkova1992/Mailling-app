@@ -5,10 +5,14 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 
 from client.forms import ClientForm
 from client.models import Client
+from client.services import get_clients_from_cache
 
 
 class ClientListView(ListView):
     model = Client
+
+    def get_queryset(self):
+        return get_clients_from_cache()
 
 
 class ClientDetailView(DetailView):

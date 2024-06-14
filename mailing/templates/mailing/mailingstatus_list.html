@@ -20,7 +20,7 @@
                 </thead>
                 <tbody>
                 {% for status in object_list %}
-                {% if user == status.owner or perms.blog.can_cancel_puplication or user.is_superuser %}
+                {% if user == status.owner or user.is_superuser %}
                 <tr>
                     <td>{{status.pk}}</td>
                     <td>{{status.mailing}}</td>

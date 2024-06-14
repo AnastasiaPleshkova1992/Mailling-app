@@ -3,7 +3,11 @@ from django.core.mail import send_mail
 from datetime import datetime, timedelta
 import pytz
 from config import settings
-from mailing.models import MailingSettings, MailingStatus, LOGS_STATUS_CHOICES
+from mailing.models import MailingSettings, MailingStatus, LOGS_STATUS_CHOICES, MailingMessage
+from django.core.cache import cache
+
+from client.models import Client
+from config.settings import CACHE_ENABLED
 
 
 def send_mailing():
@@ -50,3 +54,29 @@ def send_mailing():
             MailingStatus.objects.create(status=LOGS_STATUS_CHOICES[1][1], mailing_response=error,
                                          mailing=mailing)
             mailing.setting_status = 'Create'
+
+
+def get_mailings_from_cache():
+    """Получает список клиентов из кэша, если он пустой получает из базы данных"""
+    if not CACHE_ENABLED:
+        return MailingSettings.objects.all()
+    key = 'client_list'
+    mailings = cache.get(key)
+    if mailings is not None:
+        return mailings
+    mailings = MailingSettings.objects.all()
+    cache.set(key, mailings)
+    return mailings
+
+
+def get_messages_from_cache():
+    """Получает список клиентов из кэша, если он пустой получает из базы данных"""
+    if not CACHE_ENABLED:
+        return MailingMessage.objects.all()
+    key = 'client_list'
+    messages = cache.get(key)
+    if messages is not None:
+        return messages
+    messages = MailingMessage.objects.all()
+    cache.set(key, messages)
+    return messages

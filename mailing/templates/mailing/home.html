@@ -63,7 +63,8 @@
             </div>
             <div class="row mt-4">
                 <div class="col-12 text-sm-start">
-                    <a class="nav-link active" href="{% url 'blog:list' %}">Зайдите в наш блог, это только часть статей</a>
+                    <a class="nav-link active" href="{% url 'blog:list' %}">Зайдите в наш блог, это только часть
+                        статей</a>
                     {% for article in random_blog_list %}
                     <li>{{article.title}}</li>
                     {% endfor %}

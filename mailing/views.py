@@ -1,7 +1,6 @@
 import random
 
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView, UpdateView, CreateView, TemplateView
 
@@ -9,6 +8,7 @@ from blog.models import BlogPost
 from client.models import Client
 from mailing.forms import MailingSettingsModeratorForm, MailingSettingsForm, MailingMessageForm
 from mailing.models import MailingSettings, MailingMessage, MailingStatus
+from mailing.services import get_mailings_from_cache, get_messages_from_cache
 
 
 class HomeTemplateView(TemplateView):
@@ -67,6 +67,9 @@ class MailingMessageDeleteView(DeleteView):
 class MailingMessageListView(ListView):
     model = MailingMessage
 
+    def get_queryset(self):
+        return get_messages_from_cache()
+
 
 class MailingMessageDetailView(DetailView):
     model = MailingMessage
@@ -104,6 +107,9 @@ class MailingSettingsUpdateView(UpdateView):
 class MailingSettingsListView(ListView):
     model = MailingSettings
 
+    def get_queryset(self):
+        return get_mailings_from_cache()
+
 
 class MailingSettingsDetailView(DetailView):
     model = MailingSettings
@@ -122,8 +128,3 @@ class MailingSettingsDeleteView(DeleteView):
 
 class MailingStatusListView(ListView):
     model = MailingStatus
-
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     queryset = queryset.filter(owner=self.request.user)
-    #     return queryset
