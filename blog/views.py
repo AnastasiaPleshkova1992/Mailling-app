@@ -32,7 +32,7 @@ class BlogPostCreateView(LoginRequiredMixin, CreateView):
         if form.is_valid:
             new_object = form.save(commit=False)
             new_object.slug = slugify(new_object.title)
-            form.instance.user = self.request.user
+            new_object.instance.user = self.request.user
             new_object.save()
             return super().form_valid(form)
 
@@ -45,7 +45,7 @@ class BlogPostUpdateView(LoginRequiredMixin, UpdateView):
         if form.is_valid:
             new_object = form.save(commit=False)
             new_object.slug = slugify(new_object.title)
-            form.instance.user = self.request.user
+            new_object.instance.user = self.request.user
             new_object.save()
             return super().form_valid(form)
 
