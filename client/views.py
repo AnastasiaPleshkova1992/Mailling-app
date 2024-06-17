@@ -45,9 +45,3 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
 class ClientDeleteView(LoginRequiredMixin, DeleteView):
     model = Client
     success_url = reverse_lazy('client:list')
-
-    def get_form_class(self):
-        user = self.request.user
-        if user == self.object.owner or user.is_superuser:
-            return ClientForm
-        raise PermissionDenied
