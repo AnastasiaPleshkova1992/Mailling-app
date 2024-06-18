@@ -13,7 +13,10 @@ class ClientListView(LoginRequiredMixin, ListView):
     model = Client
 
     def get_queryset(self):
-        return get_clients_from_cache()
+        queryset = get_clients_from_cache()
+        if not (self.request.user.is_superuser or self.request.user.has_perm('client.view_client')):
+            queryset = queryset.filter(owner=self.request.user)
+        return queryset
 
 
 class ClientDetailView(LoginRequiredMixin, DetailView):
